@@ -7,7 +7,6 @@ import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
-import jakarta.persistence.OneToMany;
 import jakarta.persistence.OneToOne;
 import jakarta.persistence.Table;
 
@@ -30,7 +29,7 @@ public class Instructor
 
     @OneToOne(cascade = CascadeType.ALL)
     @JoinColumn(name = "instructor_detail_id")
-    private InstructorDetail instructorDetailId;
+    private InstructorDetail instructorDetail;
 
     //---------------------------------------------------------------------------------------------
     public Instructor()
@@ -42,7 +41,7 @@ public class Instructor
         this.firstName = firstName;
         this.lastName = lastName;
         this.email = email;
-        this.instructorDetailId = instructorDetailId;
+        this.instructorDetail = instructorDetail;
     }
 
     //---------------------------------------------------------------------------------------------
@@ -86,14 +85,14 @@ public class Instructor
         this.email = email;
     }
 
-    public InstructorDetail getInstructorDetailId()
+    public InstructorDetail getInstructorDetail()
     {
-        return instructorDetailId;
+        return instructorDetail;
     }
 
-    public void setInstructorDetailId(InstructorDetail instructorDetailId)
+    public void setInstructorDetail(InstructorDetail instructorDetail)
     {
-        this.instructorDetailId = instructorDetailId;
+        this.instructorDetail = instructorDetail;
     }
 
     //---------------------------------------------------------------------------------------------
@@ -105,7 +104,7 @@ public class Instructor
                 ", firstName='" + firstName + '\'' +
                 ", lastName='" + lastName + '\'' +
                 ", email='" + email + '\'' +
-                ", instructorDetailId=" + instructorDetailId +
+                ", instructorDetailId=" + instructorDetail +
                 '}';
     }
 }
