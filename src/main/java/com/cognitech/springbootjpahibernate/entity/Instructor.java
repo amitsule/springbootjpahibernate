@@ -15,6 +15,9 @@ import jakarta.persistence.Table;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * Entity class for Instructor
+ */
 @Entity
 @Table(name = "instructor")
 public class Instructor

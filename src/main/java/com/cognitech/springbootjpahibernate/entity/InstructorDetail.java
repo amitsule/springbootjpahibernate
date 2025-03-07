@@ -9,6 +9,9 @@ import jakarta.persistence.Id;
 import jakarta.persistence.OneToOne;
 import jakarta.persistence.Table;
 
+/**
+ * Entity class for Instructor Detail
+ */
 @Entity
 @Table(name = "instructor_detail")
 public class InstructorDetail
