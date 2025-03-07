@@ -4,9 +4,9 @@ import com.cognitech.springbootjpahibernate.dao.InstructorDAO;
 import com.cognitech.springbootjpahibernate.entity.Course;
 import com.cognitech.springbootjpahibernate.entity.Instructor;
 import com.cognitech.springbootjpahibernate.entity.InstructorDetail;
+import com.cognitech.springbootjpahibernate.entity.Student;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.SpringApplication;
-import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.annotation.Bean;
 
@@ -29,7 +29,7 @@ public class SpringbootjpahibernateApplication {
 		return runner -> {
 //			createInstructor(instructorDAO);
 
-			findInstructor(instructorDAO, 1);
+//			findInstructor(instructorDAO, 1);
 
 //			createAdditionalInstructors(instructorDAO);
 
@@ -43,8 +43,66 @@ public class SpringbootjpahibernateApplication {
 
 //			updateCourse(instructorDAO);
 
-			deleteInstructor(instructorDAO, 10);
+//			deleteInstructor(instructorDAO, 10);
+
+//			createCourseAndStudents(instructorDAO);
+//			findCourseAndStudents(instructorDAO);
+//			findStudentAndCourses(instructorDAO);
+			addMoreCoursesForStudent(instructorDAO);
 		};
+	}
+
+	//---------------------------------------------------------------------------------------------
+	private void addMoreCoursesForStudent(InstructorDAO instructorDAO)
+	{
+		Course newCourse = new Course("Dungeons and Dragons");
+
+		long id = 3;
+		Optional<Student> studentResult = instructorDAO.findStudentAndCoursesById(id);
+		studentResult.ifPresent(student -> {
+			student.addCourse(newCourse);
+			instructorDAO.updateStudent(student);
+		});
+	}
+
+	//---------------------------------------------------------------------------------------------
+	private void findStudentAndCourses(InstructorDAO instructorDAO)
+	{
+		long id = 3;
+		Optional<Student> result = instructorDAO.findStudentAndCoursesById(id);
+		result.ifPresent(student -> {
+						System.out.println("Student : " + student);
+						System.out.println("Courses : " + student.getCourses());
+		});
+	}
+
+	//---------------------------------------------------------------------------------------------
+	private void findCourseAndStudents(InstructorDAO instructorDAO)
+	{
+		long id = 15;
+		Optional<Course> result = instructorDAO.findCourseAndStudentsById(id);
+		result.ifPresent(course -> {
+							System.out.println("Course : " + course.toString());
+							System.out.println("Students : " + course.getStudents());
+		});
+	}
+
+	//---------------------------------------------------------------------------------------------
+	private void createCourseAndStudents(InstructorDAO instructorDAO)
+	{
+		Course course = new Course("Mathematics");
+
+		Student student1 = new Student("Inika", "Sule", "inika@gmail.com");
+		Student student2 = new Student("Stella", "N", "stella@gmail.com");
+		Student student3 = new Student("Juliet", "J", "juliet@gmail.com");
+
+		//--- Add students to courses
+		course.addStudent(student1);
+		course.addStudent(student2);
+		course.addStudent(student3);
+
+		//--- Save courses and associated students
+		instructorDAO.saveCourse(course);
 	}
 
 	//---------------------------------------------------------------------------------------------

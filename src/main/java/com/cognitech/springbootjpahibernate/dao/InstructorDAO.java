@@ -3,6 +3,7 @@ package com.cognitech.springbootjpahibernate.dao;
 import com.cognitech.springbootjpahibernate.entity.Course;
 import com.cognitech.springbootjpahibernate.entity.Instructor;
 import com.cognitech.springbootjpahibernate.entity.InstructorDetail;
+import com.cognitech.springbootjpahibernate.entity.Student;
 
 import java.util.List;
 import java.util.Optional;
@@ -25,5 +26,15 @@ public interface InstructorDAO
 
     Optional<Course> findCourseById(long id);
 
+    Optional<Course> findCourseByName(String name);
+
     void updateCourse(Course course);
+
+    void saveCourse(Course course);
+
+    Optional<Course> findCourseAndStudentsById(long id);
+
+    Optional<Student> findStudentAndCoursesById(long id);
+
+    void updateStudent(Student student);
 }
