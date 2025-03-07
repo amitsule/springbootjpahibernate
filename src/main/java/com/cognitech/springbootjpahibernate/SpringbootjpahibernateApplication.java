@@ -1,16 +1,20 @@
 package com.cognitech.springbootjpahibernate;
 
 import com.cognitech.springbootjpahibernate.dao.InstructorDAO;
+import com.cognitech.springbootjpahibernate.entity.Course;
 import com.cognitech.springbootjpahibernate.entity.Instructor;
 import com.cognitech.springbootjpahibernate.entity.InstructorDetail;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.SpringApplication;
+import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.annotation.Bean;
 
+import java.util.List;
 import java.util.Optional;
 
 @SpringBootApplication
+
 public class SpringbootjpahibernateApplication {
 
 	public static void main(String[] args) {
@@ -24,13 +28,22 @@ public class SpringbootjpahibernateApplication {
 	{
 		return runner -> {
 //			createInstructor(instructorDAO);
-			findInstructor(instructorDAO, 3L);
+
+			findInstructor(instructorDAO, 1);
+
 //			createAdditionalInstructors(instructorDAO);
 
-//			deleteInstructor(instructorDAO, 9L);
-//			findInstructor(instructorDAO, 9L);
+//			deleteInstructor(instructorDAO, 9);
+//			findInstructor(instructorDAO, 9);
 
-			findInstructorDetail(instructorDAO, 9L);
+//			findInstructorDetail(instructorDAO, 9);
+
+//			createInstructorAndCourses(instructorDAO);
+//			createCourses(instructorDAO);
+
+//			updateCourse(instructorDAO);
+
+			deleteInstructor(instructorDAO, 10);
 		};
 	}
 
@@ -56,10 +69,13 @@ public class SpringbootjpahibernateApplication {
 	}
 
 	//---------------------------------------------------------------------------------------------
-	private void findInstructor(InstructorDAO instructorDAO, Long id)
+	private void findInstructor(InstructorDAO instructorDAO, long id)
 	{
-		Optional<Instructor> instructor = instructorDAO.findInstructorById(id);
-		instructor.ifPresentOrElse(instr -> System.out.println(instr),
+		Optional<Instructor> instructor = instructorDAO.findInstructorAndCoursesById(id);
+		instructor.ifPresentOrElse(instr -> {
+										System.out.println(instr);
+										System.out.println(instr.getCourses());
+									},
 									() -> System.out.println("Instructor not found : " + id));
 	}
 
@@ -91,5 +107,80 @@ public class SpringbootjpahibernateApplication {
 		instructor3.setInstructorDetail(instructorDetail);
 		System.out.println("Saving instructor3 : " + instructor3.toString());
 		instructorDAO.saveInstructor(instructor3);
+	}
+
+	//---------------------------------------------------------------------------------------------
+	private void createCourses(InstructorDAO instructorDAO)
+	{
+		Course course1 = new Course("Java Programming");
+		Course course2 = new Course("Golang Programming");
+		Course course3 = new Course("Python Programming");
+		Course course4 = new Course("Guitar");
+		Course course5 = new Course("Drums");
+		Course course6 = new Course("Piano");
+
+		long id = 10;
+		Optional<Instructor> instructor = instructorDAO.findInstructorAndCoursesById(id);
+		instructor.ifPresent(instr -> {
+							System.out.println(instr.toString());
+							System.out.println(instr.getCourses());
+		});
+
+		id = 1;
+		instructor = instructorDAO.findInstructorById(id);
+		if (instructor.isPresent())
+		{
+			Instructor instr = instructor.get();
+			List<Course> courses = instructorDAO.findCoursesByInstructorId(id);
+			if (courses != null)
+			{
+				instr.setCourses(courses);
+				instr.addCourse(course1);
+				instr.addCourse(course4);
+				instr.addCourse(course5);
+			}
+			instructorDAO.updateInstructor(instr);
+		}
+
+		id = 2;
+		instructor = instructorDAO.findInstructorById(id);
+		if (instructor.isPresent())
+		{
+			Instructor instr = instructor.get();
+			List<Course> courses = instructorDAO.findCoursesByInstructorId(id);
+			if (courses != null)
+			{
+				instr.setCourses(courses);
+				instr.addCourse(course2);
+				instr.addCourse(course3);
+				instr.addCourse(course6);
+			}
+			instructorDAO.updateInstructor(instr);
+		}
+	}
+
+	//---------------------------------------------------------------------------------------------
+	private void createInstructorAndCourses(InstructorDAO instructorDAO)
+	{
+		Instructor instructor = new Instructor("John", "Smith", "john@gmail.com");
+		InstructorDetail instructorDetail = new InstructorDetail("https://www.youtube.com/HS86743GS", "Video Games");
+		instructor.setInstructorDetail(instructorDetail);
+		Course course1 = new Course("Programming 101");
+		Course course2 = new Course("Wiring Routers");
+		instructor.addCourse(course1);
+		instructor.addCourse(course2);
+		instructorDAO.saveInstructor(instructor);
+	}
+
+	//---------------------------------------------------------------------------------------------
+	private void updateCourse(InstructorDAO instructorDAO)
+	{
+		long id = 2;
+		Optional<Course> course = instructorDAO.findCourseById(id);
+		course.ifPresent(cr -> {
+			System.out.println(course);
+			cr.setTitle("Wiring Networks & Routers");
+			instructorDAO.updateCourse(cr);
+		});
 	}
 }
